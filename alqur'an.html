@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Daftar Surah Al-Qur'an</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0d0d0d;
+      color: #fff;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #000;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid #222;
+      flex-wrap: wrap;
+    }
+
+    .header-left a {
+      text-decoration: none;
+      color: #00ffff;
+      font-weight: bold;
+      font-size: 1rem;
+      background: #111;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      transition: background 0.3s;
+    }
+
+    .header-left a:hover {
+      background: #222;
+    }
+
+    .header-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #00ffff;
+      margin: 0.5rem 0;
+      flex-grow: 1;
+      text-align: center;
+    }
+
+    .header-right input {
+      padding: 0.6rem 1rem;
+      border-radius: 6px;
+      border: none;
+      background-color: #1a1a1a;
+      color: #00ffff;
+      outline: none;
+      width: 200px;
+    }
+
+    .main {
+      padding: 2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .surah-card {
+      background-color: #1a1a1a;
+      padding: 1rem 1.5rem;
+      border-radius: 10px;
+      text-decoration: none;
+      color: #fff;
+      display: block;
+      box-shadow: 0 2px 6px rgba(0, 255, 255, 0.1);
+      transform: translateY(30px);
+      opacity: 0;
+      transition: all 0.5s ease;
+    }
+
+    .surah-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .surah-card:hover {
+      background-color: #222;
+      box-shadow: 0 4px 12px rgba(0, 255, 255, 0.2);
+    }
+
+    .surah-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #00ffff;
+    }
+
+    .surah-ayat {
+      font-size: 0.95rem;
+      color: #ccc;
+    }
+
+    @media (max-width: 600px) {
+      .header-title {
+        order: 2;
+        width: 100%;
+        text-align: center;
+        margin: 1rem 0;
+      }
+
+      .header-left, .header-right {
+        order: 1;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+      }
+
+      .header-right {
+        justify-content: flex-end;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <a href="index.html">← Kembali</a>
+  </div>
+  <div class="header-title">Daftar Surah Al-Qur'an</div>
+  <div class="header-right">
+    <input type="text" id="searchInput" placeholder="Cari Surah...">
+  </div>
+</header>
+
+<div class="main" id="surahList">
+  <a href="surah.html?id=1" class="surah-card">
+    <div class="surah-title">1. Al-Fatihah</div>
+    <div class="surah-ayat">7 Ayat</div>
+  </a>
+  <a href="surah.html?id=2" class="surah-card">
+    <div class="surah-title">2. Al-Baqarah</div>
+    <div class="surah-ayat">286 Ayat</div>
+  </a>
+  <a href="surah.html?id=3" class="surah-card">
+    <div class="surah-title">3. Ali 'Imran</div>
+    <div class="surah-ayat">200 Ayat</div>
+  </a>
+  <a href="surah.html?id=4" class="surah-card">
+    <div class="surah-title">4. An-Nisa'</div>
+    <div class="surah-ayat">176 Ayat</div>
+  </a>
+  <a href="surah.html?id=5" class="surah-card">
+    <div class="surah-title">5. Al-Ma'idah</div>
+    <div class="surah-ayat">120 Ayat</div>
+  </a>
+  <a href="surah.html?id=6" class="surah-card">
+    <div class="surah-title">6. Al-An'am</div>
+    <div class="surah-ayat">165 Ayat</div>
+  </a>
+</div>
+
+<script>
+  // Animasi saat masuk viewport
+  const cards = document.querySelectorAll('.surah-card');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  cards.forEach(card => observer.observe(card));
+
+  // Pencarian surah
+  const searchInput = document.getElementById('searchInput');
+  searchInput.addEventListener('input', function () {
+    const keyword = this.value.toLowerCase();
+    cards.forEach(card => {
+      const title = card.querySelector('.surah-title').innerText.toLowerCase();
+      card.style.display = title.includes(keyword) ? 'block' : 'none';
+    });
+  });
+</script>
+
+</body>
+</html>
