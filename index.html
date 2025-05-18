@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Menu Kiri Vertikal dengan Ikon dan Label</title>
+  
+<!-- Swiper CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+<style>
+  html, body {
+    height: 100%;
+    margin: 0; padding: 0;
+    background: #111;
+    color: white;
+    font-family: 'Segoe UI', sans-serif;
+    overflow: hidden;
+  }
+  
+/* Container search di kanan */
+.search-wrapper {
+  position: fixed;
+  right: 10px;
+  top: 20px;
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+  transition: width 0.4s ease;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  background: transparent;
+  border-radius: 20px;
+}
+
+/* Lebarkan saat aktif */
+.search-wrapper.active {
+  width: 250px;
+  background: rgba(0, 255, 255, 0.1);
+  box-shadow: 0 0 8px #00ffff88;
+}
+
+/* Icon search */
+.search-icon {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0 8px 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  transition: opacity 0.3s ease;
+}
+
+/* Input search awalnya tersembunyi (width 0, opacity 0) */
+.search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: #00ffff;
+  font-size: 1rem;
+  outline: none;
+  padding: 0 10px;
+  opacity: 0;
+  width: 0;
+  transition: width 0.4s ease, opacity 0.4s ease;
+  caret-color: #00ffff;
+  text-align: right; /* text rata kanan biar enak di kanan */
+}
+
+/* Input muncul saat aktif */
+.search-wrapper.active .search-input {
+  width: 100%;
+  opacity: 1;
+}
+
+/* Sembunyikan icon saat aktif */
+.search-wrapper.active .search-icon {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+
+  .swiper {
+    width: calc(100% - 100px); /* kasih ruang buat menu kiri */
+    height: 100vh;
+    float: right;
+  }
+
+  .swiper-slide {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.6s ease-in-out;
+  }
+
+  .swiper-slide.swiper-slide-active {
+    opacity: 1;
+  }
+
+  .swiper-slide h1 {
+    font-size: clamp(1.5rem, 4vw, 2.8rem);
+    margin-bottom: 1rem;
+    color: #00ffff;
+  }
+
+  .swiper-slide p {
+    font-size: clamp(1rem, 2.2vw, 1.6rem);
+    max-width: 800px;
+    margin-bottom: 0.8rem;
+    line-height: 1.6;
+    padding: 0 1rem;
+    word-wrap: break-word;
+  }
+
+  /* Pagination vertical dots */
+  .swiper-pagination {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 10;
+  }
+
+  .swiper-pagination-bullet {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #555;
+    opacity: 0.5;
+    transition: all 0.3s ease;
+  }
+
+  .swiper-pagination-bullet-active {
+    background: #00ffff;
+    opacity: 1;
+    transform: scale(1.4);
+  }
+
+  /* Menu kiri vertikal */
+.side-menu-left {
+  position: fixed;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 10px 0;
+  z-index: 20;
+  align-items: center;
+  border-right: none;
+  background: transparent; /* transparan */
+}
+
+.menu-item-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  color: #ccc;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  user-select: none;
+  width: 80px;
+}
+
+.menu-item-left:hover {
+  color: #00ffff;
+}
+
+.menu-item-left img {
+  width: 40px;
+  height: 40px;
+  opacity: 0.3; /* ikon transparan */
+  margin-bottom: 6px;
+  transition: opacity 0.3s ease;
+}
+
+.menu-item-left:hover img {
+  opacity: 1;
+}
+
+.menu-item-left span {
+  font-size: 0.9rem;
+  text-align: center;
+  transition: color 0.3s ease;
+}
+</style>
+</head>
+<body>
+  
+  <!-- Search bar wrapper -->
+<div class="search-wrapper">
+  <button class="search-icon" aria-label="Open Search">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="#00ffff" viewBox="0 0 24 24" width="28" height="28">
+      <path d="M15.5 14h-.79l-.28-.27a6.471 6.471 0 001.48-5.34C15.16 5.6 12.28 3 8.99 3 5.7 3 2.82 5.6 2.82 8.39c0 2.8 2.88 5.4 6.17 5.4 1.61 0 3.09-.66 4.12-1.72l.27.28v.79l5 4.99L20.49 19l-4.99-5zM8.99 13c-2.04 0-3.7-1.66-3.7-3.7S6.95 5.6 8.99 5.6 12.69 7.26 12.69 9.3 11.03 13 8.99 13z"/>
+    </svg>
+  </button>
+  <input type="text" class="search-input" placeholder="Cari..." aria-label="Search input" />
+</div>
+
+
+<!-- Side Menu kiri -->
+<div class="side-menu-left">
+  <div class="menu-item-left" title="Tahlil & Yasin">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M19 2H5a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14V2zM7 18H6v-2h1v2zm0-4H6v-2h1v2zm0-4H6V8h1v2zm12 8h-5v-2h5v2zm0-4h-5v-2h5v2zm0-4h-5V8h5v2z"/>
+    </svg>
+    <span>Tahlil & Yasin</span>
+  </div>
+
+  <div class="menu-item-left" title="Tahlil & Yasin">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M19 2H5a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14V2zM7 18H6v-2h1v2zm0-4H6v-2h1v2zm0-4H6V8h1v2zm12 8h-5v-2h5v2zm0-4h-5v-2h5v2zm0-4h-5V8h5v2z"/>
+    </svg>
+    <span>Tahlil & Yasin</span>
+  </div>
+
+  <div class="menu-item-left" title="Wirid & Doa">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M19 2H5a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14V2zM7 18H6v-2h1v2zm0-4H6v-2h1v2zm0-4H6V8h1v2zm12 8h-5v-2h5v2zm0-4h-5v-2h5v2zm0-4h-5V8h5v2z"/>
+    </svg>
+    <span>Wirid & Doa</span>
+  </div>
+
+
+
+
+  <div class="menu-item-left" title="Maulid">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M19 2H5a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14V2zM7 18H6v-2h1v2zm0-4H6v-2h1v2zm0-4H6V8h1v2zm12 8h-5v-2h5v2zm0-4h-5v-2h5v2zm0-4h-5V8h5v2z"/>
+    </svg>
+    <span>Maulid</span>
+  </div>
+</div>
+
+<!-- Swiper Container -->
+<div class="swiper mySwiper">
+  <div class="swiper-wrapper">
+
+    <div class="swiper-slide">
+      <h1>Al-Fatihah</h1>
+      <p>بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+      <p>"Dengan nama Allah Yang Maha Pengasih lagi Maha Penyayang."</p>
+    </div>
+
+    <div class="swiper-slide">
+      <p>الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ</p>
+      <p>"Segala puji bagi Allah, Tuhan semesta alam."</p>
+    </div>
+
+    <div class="swiper-slide">
+      <p>الرَّحْمَٰنِ الرَّحِيمِ</p>
+      <p>"Yang Maha Pengasih, Maha Penyayang."</p>
+    </div>
+
+  </div>
+
+  <!-- Pagination -->
+  <div class="swiper-pagination"></div>
+</div>
+
+    <!-- search bar -->
+  <script>
+  const searchWrapper = document.querySelector('.search-wrapper');
+  const searchIcon = searchWrapper.querySelector('.search-icon');
+  const searchInput = searchWrapper.querySelector('.search-input');
+
+  searchIcon.addEventListener('click', () => {
+    searchWrapper.classList.add('active');
+    searchInput.focus();
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!searchWrapper.contains(e.target)) {
+      searchWrapper.classList.remove('active');
+      searchInput.value = '';
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === "Escape") {
+      searchWrapper.classList.remove('active');
+      searchInput.value = '';
+    }
+  });
+</script>
+
+<!-- Swiper JS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+  const slidesData = [
+  {
+    title: "Al-Fatihah",
+    texts: [
+      "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
+      '"Dengan nama Allah Yang Maha Pengasih lagi Maha Penyayang."'
+    ]
+  },
+  {
+    title: "Al-Fatihah",
+    texts: [
+      "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ",
+      '"Segala puji bagi Allah, Tuhan semesta alam."'
+    ]
+  },
+  {
+    title: "Al-Fatihah",
+    texts: [
+      "الرَّحْمَٰنِ الرَّحِيمِ",
+      '"Yang Maha Pengasih, Maha Penyayang."'
+    ]
+  }
+  // Bisa tambah data slide lain di sini...
+];
+
+  const swiper = new Swiper(".mySwiper", {
+    direction: "vertical",
+    mousewheel: {
+      sensitivity: 1,
+      releaseOnEdges: true
+    },
+    keyboard: {
+      enabled: true,
+      onlyInViewport: true,
+    },
+    speed: 800,
+    pagination: {
+      el: ".swiper-pagination",
+      clickable: true,
+    },
+  });
+  
+  function renderSlides(data) {
+  const swiperWrapper = document.querySelector('.swiper-wrapper');
+  swiperWrapper.innerHTML = ''; // kosongkan dulu
+
+  if(data.length === 0) {
+    swiperWrapper.innerHTML = `<div class="swiper-slide"><h1>Hasil tidak ditemukan</h1><p>Coba kata kunci lain.</p></div>`;
+    swiper.update();
+    return;
+  }
+
+  data.forEach(item => {
+    const slideEl = document.createElement('div');
+    slideEl.classList.add('swiper-slide');
+
+    let html = '';
+    if(item.title) {
+      html += `<h1>${item.title}</h1>`;
+    }
+    item.texts.forEach(text => {
+      html += `<p>${text}</p>`;
+    });
+    slideEl.innerHTML = html;
+    swiperWrapper.appendChild(slideEl);
+  });
+
+  swiper.update();
+  swiper.slideTo(0);
+}
+function filterSlides(keyword) {
+  if(!keyword) return slidesData; // kosong, kembalikan semua
+
+  const lowerKeyword = keyword.toLowerCase();
+
+  return slidesData.filter(item => {
+    // Cari di title dan teks ayat (gabung semua teks jadi satu string)
+    const haystack = (item.title + ' ' + item.texts.join(' ')).toLowerCase();
+    return haystack.includes(lowerKeyword);
+  });
+}
+searchInput.addEventListener('input', e => {
+  const keyword = e.target.value.trim();
+  const filtered = filterSlides(keyword);
+  renderSlides(filtered);
+});
+
+</script> 
+</body>
+</html>
